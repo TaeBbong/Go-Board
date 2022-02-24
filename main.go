@@ -1,6 +1,15 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"utils"
+)
+
+func init() {
+	utils.SetupDB()
+	fmt.Println("init from main.go")
+}
 
 func main() {
 	r := gin.Default()
