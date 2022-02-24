@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"utils"
+	"models"
 )
 
 func init() {
-	utils.SetupDB()
+	models.SetupDB()
 	fmt.Println("init from main.go")
 }
 

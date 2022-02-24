@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.7
-	utils v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -37,7 +36,5 @@ require (
 	gorm.io/gorm v1.23.1 // indirect
 	models v0.0.0-00010101000000-000000000000 // indirect
 )
-
-replace utils => ./utils
 
 replace models => ./models

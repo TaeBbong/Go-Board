@@ -1,11 +1,12 @@
-package utils
+package models
 
 import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"models"
 )
+
+var db *gorm.DB
 
 func SetupDB() {
 	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Seoul"
@@ -13,6 +14,6 @@ func SetupDB() {
 	if err != nil {
 		fmt.Println("[-] DB Connection Failed...")
 	}
-	db.AutoMigrate(models.User{})
-	db.AutoMigrate(models.Article{})
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Article{})
 }
