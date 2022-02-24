@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"models"
+	"services"
 )
 
 func init() {
@@ -18,5 +19,9 @@ func main() {
 			"message": "pong",
 		})
 	})
+	handlers := func(c *gin.Context) {
+		services.GetAll()
+	}
+	r.GET("/articles", handlers)
 	r.Run()
 }
