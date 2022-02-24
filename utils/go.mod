@@ -5,6 +5,7 @@ go 1.17
 require (
 	gorm.io/driver/postgres v1.3.1
 	gorm.io/gorm v1.23.1
+	models v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -21,3 +22,5 @@ require (
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
+
+replace models => ../models

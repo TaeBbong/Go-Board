@@ -35,6 +35,9 @@ require (
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gorm.io/driver/postgres v1.3.1 // indirect
 	gorm.io/gorm v1.23.1 // indirect
+	models v0.0.0-00010101000000-000000000000 // indirect
 )
 
 replace utils => ./utils
+
+replace models => ./models
