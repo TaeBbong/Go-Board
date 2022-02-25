@@ -2,14 +2,10 @@ module main
 
 go 1.17
 
-replace models => ./models
-
-replace services => ./services
-
 require (
 	github.com/gin-gonic/gin v1.7.7
-	models v0.0.0-00010101000000-000000000000
-	services v0.0.0-00010101000000-000000000000
+	gorm.io/driver/postgres v1.3.1
+	gorm.io/gorm v1.23.1
 )
 
 require (
@@ -38,6 +34,4 @@ require (
 	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
-	gorm.io/driver/postgres v1.3.1 // indirect
-	gorm.io/gorm v1.23.1 // indirect
 )
