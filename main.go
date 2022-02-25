@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net/http"
@@ -24,18 +25,36 @@ type Article struct {
 	UserID  uint
 }
 
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
+
 func signUpHandler(c *gin.Context) {
 	var user User
+	var existUser User
 	if err := c.ShouldBind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": fmt.Sprintf("err: %v", err),
 		})
 		return
 	}
-	db.Create(&User{Username: user.Username, Password: user.Password})
-	c.JSON(http.StatusCreated, gin.H{
-		"created": "ok",
-	})
+	if db.First(&existUser, "username", user.Username) == nil {
+		hash, _ := HashPassword(user.Password)
+		db.Create(&User{Username: user.Username, Password: hash})
+		c.JSON(http.StatusCreated, gin.H{
+			"created": "ok",
+		})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("err: %v", err),
+		})
+	}
 }
 
 func signInHandler(c *gin.Context) {
@@ -47,10 +66,11 @@ func signInHandler(c *gin.Context) {
 		})
 		return
 	}
-	db.First(&existUser, user.ID)
-	if user.Username == existUser.Username && user.Password == existUser.Password {
+	db.First(&existUser, "username", user.Username)
+	if CheckPasswordHash(user.Password, existUser.Password) {
 		c.JSON(http.StatusOK, gin.H{
-			"signIn": "ok",
+			"accessToken":  "",
+			"refreshToken": "",
 		})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{
