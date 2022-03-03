@@ -7,10 +7,14 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net/http"
+	"text/template"
 )
 
-var db *gorm.DB
-var err error
+var (
+	db  *gorm.DB
+	err error
+	tpl *template.Template
+)
 
 type User struct {
 	gorm.Model
@@ -129,7 +133,12 @@ func deleteHandler(c *gin.Context) {
 	})
 }
 
+func indexHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.gohtml", nil)
+}
+
 func init() {
+	tpl = template.Must(template.ParseGlob("pages/*.gohtml"))
 	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Seoul"
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -146,6 +155,7 @@ func main() {
 func boardServer() *gin.Engine {
 	r := gin.Default()
 
+	r.GET("/", indexHandler)
 	r.POST("/users/signup", signUpHandler)
 	r.POST("/users/signin", signInHandler)
 	r.GET("/articles", retrieveAllHandler)
