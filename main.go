@@ -155,14 +155,14 @@ func main() {
 func boardServer() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/", indexHandler)
-	r.POST("/users/signup", signUpHandler)
-	r.POST("/users/signin", signInHandler)
-	r.GET("/articles", retrieveAllHandler)
-	r.POST("/articles", createHandler)
-	r.GET("/articles/:id", retrieveHandler)
-	r.PUT("/articles/:id", updateHandler)
-	r.DELETE("/articles/:id", deleteHandler)
+	r.GET("/api/", indexHandler)
+	r.POST("/api/users/signup", signUpHandler)
+	r.POST("/api/users/signin", signInHandler)
+	r.GET("/api/articles", retrieveAllHandler)
+	r.POST("/api/articles", createHandler)
+	r.GET("/api/articles/:id", retrieveHandler)
+	r.PUT("/api/articles/:id", updateHandler)
+	r.DELETE("/api/articles/:id", deleteHandler)
 
 	return r
 }
