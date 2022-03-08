@@ -6,8 +6,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"html/template"
 	"net/http"
-	"text/template"
 )
 
 var (
@@ -133,12 +133,52 @@ func deleteHandler(c *gin.Context) {
 	})
 }
 
-func indexHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.gohtml", nil)
+func indexPageHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func postListPageHander(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func postDetailPageHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func postCreatePageHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func postCreateHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func postUpdatePageHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func postUpdateHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func postDeleteHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func signUpPageHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func signInPageHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+}
+
+func signOutHandler(c *gin.Context) {
+	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
 }
 
 func init() {
-	tpl = template.Must(template.ParseGlob("pages/*.gohtml"))
+	tpl = template.Must(template.ParseGlob("pages/*.html"))
 	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Seoul"
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -155,7 +195,22 @@ func main() {
 func boardServer() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/api/", indexHandler)
+	r.GET("/", indexPageHandler)
+	r.GET("/post", postListPageHander)
+	r.GET("/post/:id", postDetailPageHandler)
+	r.GET("/post/create", postCreatePageHandler)
+	r.POST("/post/create", postCreateHandler)
+	r.GET("/post/edit/:id", postUpdatePageHandler)
+	r.POST("/post/edit/:id", postUpdateHandler)
+	r.GET("/post/delete/:id", postDeleteHandler)
+
+	r.GET("/users/signup", signUpPageHandler)
+	r.POST("/users/signup", signUpHandler)
+	r.GET("/users/signin", signInPageHandler)
+	r.POST("/users/signin", signInHandler)
+	r.GET("/users/signout", signOutHandler)
+
+	// api version
 	r.POST("/api/users/signup", signUpHandler)
 	r.POST("/api/users/signin", signInHandler)
 	r.GET("/api/articles", retrieveAllHandler)
