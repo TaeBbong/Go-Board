@@ -4,7 +4,7 @@
     <form
       class="form-horizontal"
       method="POST"
-      action="/post/{{.id}}/edit/"
+      action="/post/{{post['id']}}/edit/"
     >
       <fieldset>
         <!-- Form Name -->
@@ -22,7 +22,7 @@
               ,
               autofocus
               required
-              value="{{.title}}"
+              value="{{post['title']}}"
             /><!--required : 공백입력시 경고-->
           </div>
         </div>
@@ -38,7 +38,7 @@
               style="height: 260px"
               required
             >
-{{.description}}</textarea
+{{post['content']}}</textarea
             >
           </div>
         </div>

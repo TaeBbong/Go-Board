@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <br />
+  <h1>
+    <strong><a style="color: #110957">Hello PAGE</a></strong>
+  </h1>
+  <h2>{{content}}</h2>
+</div>
+{% endblock %}

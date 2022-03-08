@@ -1,4 +1,5 @@
-{{define "base"}}
+{% autoescape false %}
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -22,18 +23,28 @@
 		<li class="nav-item active">
 			<a class="nav-link" href="/post">Post</a>
 		</li>
+		<li class="nav-item active">
+			<a class="nav-link" href="/quiz">Quiz</a>
+		</li>
+		<li class="nav-item active">
+			<a class="nav-link" href="/file">File</a>
+		</li>
 		</ul>
 		<div>
-{{/*		{% if session['username'] %}*/}}
-{{/*		<button class="btn btn-dark btn-right" type="button" onclick="location.href='/user/signout'">로그아웃</button>*/}}
-{{/*		{% else %}*/}}
+		{% if session['username'] %}
+		<button class="btn btn-dark btn-right" type="button" onclick="location.href='/user/signout'">로그아웃</button>
+		{% else %}
 		<button class="btn btn-dark btn-right" type="button" onclick="location.href='/user/signin'">로그인</button>
-{{/*		{% endif %}*/}}
+		{% endif %}
 		<button class="btn btn-dark btn-right" type="button" onclick="location.href='/post/create'"><strong>게시글쓰기</strong></button>
 		</div>
-		</div>
 	</nav>
-	{{template "content" .}}
+	</div>
+
+	{% block content %}
+    {% endblock %}
+
 	</body>
 </html>
-{{end}}
+
+{% endautoescape %}
