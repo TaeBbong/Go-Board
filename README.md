@@ -1,3 +1,11 @@
+## Deploy
+
+```bash
+$ docker => posgresql
+$ go mod tidy
+$ go run main.go
+```
+
 ## GoLang 기본 개념 정리
 - 모듈 : 패키지의 모음, 프로젝트 단위(폴더)라고 이해할 수 있음, 깃허브 레포 이름을 따서 작성하는게 일반적
 - 패키지 : 기능의 모음, 파일 단위라고 이해할 수 있음, 외부에서 import 해오는 패키지도 포함됨
