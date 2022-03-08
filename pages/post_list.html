@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block content %}
+{{ template "base" }}
+
+{{ define "main" }}
 <div class="container">
   <br />
   <h1>
@@ -13,19 +15,19 @@
       </tr>
     </thead>
 
-    <tbody>
-      {% for post in posts %}
-      <tr>
-        <td>{{post['id']}}</td>
-        <td>
-          <a style="color: #110957" href="/post/{{post['id']}}"
-            >{{post['title']}}</a
-          >
-        </td>
-        <td>{{post['user_id']}}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
+{{/*    <tbody>*/}}
+{{/*      {% for post in posts %}*/}}
+{{/*      <tr>*/}}
+{{/*        <td>{{post['id']}}</td>*/}}
+{{/*        <td>*/}}
+{{/*          <a style="color: #110957" href="/post/{{post['id']}}"*/}}
+{{/*            >{{post['title']}}</a*/}}
+{{/*          >*/}}
+{{/*        </td>*/}}
+{{/*        <td>{{post['user_id']}}</td>*/}}
+{{/*      </tr>*/}}
+{{/*      {% endfor %}*/}}
+{{/*    </tbody>*/}}
   </table>
 </div>
-{% endblock %}
+{{ end }}

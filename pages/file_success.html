@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block content %}
+{{ template "base" }}
+
+{{ define "main" }}
 <div class="container">
   <div class="card">
     <div class="card-body">
@@ -12,4 +14,5 @@
     </div>
   </div>
 </div>
-{% endblock %}
+
+{{ end }}

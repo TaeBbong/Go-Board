@@ -1,4 +1,4 @@
-{% autoescape false %}
+{{ define "base" }}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,20 +31,14 @@
 		</li>
 		</ul>
 		<div>
-		{% if session['username'] %}
 		<button class="btn btn-dark btn-right" type="button" onclick="location.href='/user/signout'">로그아웃</button>
-		{% else %}
 		<button class="btn btn-dark btn-right" type="button" onclick="location.href='/user/signin'">로그인</button>
-		{% endif %}
 		<button class="btn btn-dark btn-right" type="button" onclick="location.href='/post/create'"><strong>게시글쓰기</strong></button>
 		</div>
+		</div>
 	</nav>
-	</div>
-
-	{% block content %}
-    {% endblock %}
-
+		{{ template "main" . }}
 	</body>
 </html>
 
-{% endautoescape %}
+{{ end }}

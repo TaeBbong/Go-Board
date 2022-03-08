@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block content %}
+{{ template "base" }}
+
+{{ define "main" }}
 <div class="container">
   <section>
     <form class="form-horizontal" method="post" action="/post/create">
@@ -52,4 +54,4 @@
     </form>
   </section>
 </div>
-{% endblock %}
+{{ end }}

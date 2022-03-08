@@ -134,7 +134,7 @@ func deleteHandler(c *gin.Context) {
 }
 
 func indexPageHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+	tpl.ExecuteTemplate(c.Writer, "index.html", "qwer")
 }
 
 func postListPageHander(c *gin.Context) {
@@ -204,11 +204,11 @@ func boardServer() *gin.Engine {
 	r.POST("/post/edit/:id", postUpdateHandler)
 	r.GET("/post/delete/:id", postDeleteHandler)
 
-	r.GET("/users/signup", signUpPageHandler)
-	r.POST("/users/signup", signUpHandler)
-	r.GET("/users/signin", signInPageHandler)
-	r.POST("/users/signin", signInHandler)
-	r.GET("/users/signout", signOutHandler)
+	r.GET("/user/signup", signUpPageHandler)
+	r.POST("/user/signup", signUpHandler)
+	r.GET("/user/signin", signInPageHandler)
+	r.POST("/user/signin", signInHandler)
+	r.GET("/user/signout", signOutHandler)
 
 	// api version
 	r.POST("/api/users/signup", signUpHandler)
