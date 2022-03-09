@@ -179,27 +179,17 @@ func userSignInPageHandler(c *gin.Context) {
 }
 
 func postCreateHandler(c *gin.Context) {
-	var article Article
-	if err := c.ShouldBind(&article); err != nil { // TODO: form 관련 사용법 체크
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Sprintf("err: %v", err),
-		})
-		return
-	}
-	db.Create(&Article{Title: article.Title, Content: article.Content, UserID: article.UserID})
+	title := c.PostForm("title")
+	content := c.PostForm("content")
+	db.Create(&Article{Title: title, Content: content, UserID: 99})
 	c.Redirect(http.StatusFound, "/post")
 }
 
 func postUpdateHandler(c *gin.Context) {
-	var article Article
-	if err := c.ShouldBind(&article); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Sprintf("err: %v", err),
-		})
-		return
-	}
 	id := c.Param("id")
-	db.Where(id).Updates(&Article{Title: article.Title, Content: article.Content})
+	title := c.PostForm("title")
+	content := c.PostForm("content")
+	db.Where(id).Updates(&Article{Title: title, Content: content})
 	c.Redirect(http.StatusFound, "/post")
 }
 
@@ -207,42 +197,43 @@ func postDeleteHandler(c *gin.Context) {
 	var article Article
 	id := c.Param("id")
 	db.Where(id).Delete(&article)
-	c.Redirect(http.StatusAccepted, "/post")
+	c.Redirect(http.StatusFound, "/post")
 }
 
 func userSignUpHandler(c *gin.Context) {
-	var user User
 	var existUser User
-	if err := c.ShouldBind(&user); err != nil {
-		c.HTML(http.StatusBadRequest, "user_signup_error.html", gin.H{})
-		return
-	}
-	if db.First(&existUser, "username", user.Username) == nil {
-		hash, _ := HashPassword(user.Password)
-		db.Create(&User{Username: user.Username, Password: hash})
-		c.Redirect(http.StatusCreated, "/user/signin")
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	confirm := c.PostForm("confirm")
+
+	if db.First(&existUser, "username", username) == nil {
+		if password == confirm {
+			hash, _ := HashPassword(password)
+			db.Create(&User{Username: username, Password: hash})
+			c.Redirect(http.StatusFound, "/user/signin")
+		} else {
+			c.HTML(http.StatusBadRequest, "user_signup_error.html", gin.H{})
+		}
 	} else {
 		c.HTML(http.StatusBadRequest, "user_signup_error.html", gin.H{})
 	}
 }
 
 func userSignInHandler(c *gin.Context) {
-	var user User
 	var existUser User
-	if err := c.ShouldBind(&user); err != nil {
-		c.HTML(http.StatusBadRequest, "user_signin_error.html", gin.H{})
-		return
-	}
-	db.First(&existUser, "username", user.Username)
-	if CheckPasswordHash(user.Password, existUser.Password) {
-		c.Redirect(http.StatusOK, "/")
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+
+	db.First(&existUser, "username", username)
+	if CheckPasswordHash(password, existUser.Password) {
+		c.Redirect(http.StatusFound, "/")
 	} else {
 		c.HTML(http.StatusBadRequest, "user_signin_error.html", gin.H{})
 	}
 }
 
 func userSignOutHandler(c *gin.Context) {
-	c.Redirect(http.StatusOK, "/")
+	c.Redirect(http.StatusFound, "/")
 }
 
 func init() {
