@@ -1,12 +1,10 @@
-{{ template "base" }}
-
-{{ define "main" }}
+{{ template "header.html" .}}
 <div class="container">
   <section>
     <form
       class="form-horizontal"
       method="POST"
-      action="/post/{{.id}}/edit/"
+      action="/post/{{.post.ID}}/edit/"
     >
       <fieldset>
         <!-- Form Name -->
@@ -24,7 +22,7 @@
               ,
               autofocus
               required
-              value="{{.title}}"
+              value="{{.post.Title}}"
             /><!--required : 공백입력시 경고-->
           </div>
         </div>
@@ -40,7 +38,7 @@
               style="height: 260px"
               required
             >
-{{.content}}</textarea
+{{.post.Content}}</textarea
             >
           </div>
         </div>
@@ -61,4 +59,4 @@
     </form>
   </section>
 </div>
-{{ end }}
+{{ template "footer.html" .}}

@@ -134,47 +134,115 @@ func deleteHandler(c *gin.Context) {
 }
 
 func indexPageHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", "qwer")
+	c.HTML(http.StatusOK, "index.html", gin.H{
+		"content": "This is IndexPage",
+		"isLogin": false,
+	})
 }
 
-func postListPageHander(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+func postListPageHandler(c *gin.Context) {
+	var articles []Article
+	db.Find(&articles, &Article{})
+	c.HTML(http.StatusOK, "post_list.html", gin.H{
+		"posts": articles,
+	})
 }
 
 func postDetailPageHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+	var article Article
+	id := c.Param("id")
+	db.First(&article, id)
+	c.HTML(http.StatusOK, "post_detail.html", gin.H{
+		"post": article,
+	})
 }
 
 func postCreatePageHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
-}
-
-func postCreateHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+	c.HTML(http.StatusOK, "post_create.html", gin.H{})
 }
 
 func postUpdatePageHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+	var article Article
+	id := c.Param("id")
+	db.First(&article, id)
+	c.HTML(http.StatusOK, "post_edit.html", gin.H{
+		"post": article,
+	})
+}
+
+func userSignUpPageHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "user_signup.html", gin.H{})
+}
+
+func userSignInPageHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "user_signin.html", gin.H{})
+}
+
+func postCreateHandler(c *gin.Context) {
+	var article Article
+	if err := c.ShouldBind(&article); err != nil { // TODO: form 관련 사용법 체크
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("err: %v", err),
+		})
+		return
+	}
+	db.Create(&Article{Title: article.Title, Content: article.Content, UserID: article.UserID})
+	c.Redirect(http.StatusFound, "/post")
 }
 
 func postUpdateHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+	var article Article
+	if err := c.ShouldBind(&article); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("err: %v", err),
+		})
+		return
+	}
+	id := c.Param("id")
+	db.Where(id).Updates(&Article{Title: article.Title, Content: article.Content})
+	c.Redirect(http.StatusFound, "/post")
 }
 
 func postDeleteHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+	var article Article
+	id := c.Param("id")
+	db.Where(id).Delete(&article)
+	c.Redirect(http.StatusAccepted, "/post")
 }
 
-func signUpPageHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+func userSignUpHandler(c *gin.Context) {
+	var user User
+	var existUser User
+	if err := c.ShouldBind(&user); err != nil {
+		c.HTML(http.StatusBadRequest, "user_signup_error.html", gin.H{})
+		return
+	}
+	if db.First(&existUser, "username", user.Username) == nil {
+		hash, _ := HashPassword(user.Password)
+		db.Create(&User{Username: user.Username, Password: hash})
+		c.Redirect(http.StatusCreated, "/user/signin")
+	} else {
+		c.HTML(http.StatusBadRequest, "user_signup_error.html", gin.H{})
+	}
 }
 
-func signInPageHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+func userSignInHandler(c *gin.Context) {
+	var user User
+	var existUser User
+	if err := c.ShouldBind(&user); err != nil {
+		c.HTML(http.StatusBadRequest, "user_signin_error.html", gin.H{})
+		return
+	}
+	db.First(&existUser, "username", user.Username)
+	if CheckPasswordHash(user.Password, existUser.Password) {
+		c.Redirect(http.StatusOK, "/")
+	} else {
+		c.HTML(http.StatusBadRequest, "user_signin_error.html", gin.H{})
+	}
 }
 
-func signOutHandler(c *gin.Context) {
-	tpl.ExecuteTemplate(c.Writer, "index.html", nil)
+func userSignOutHandler(c *gin.Context) {
+	c.Redirect(http.StatusOK, "/")
 }
 
 func init() {
@@ -190,25 +258,34 @@ func init() {
 
 func main() {
 	boardServer().Run()
+	// boardAPIServer().Run()
 }
 
 func boardServer() *gin.Engine {
 	r := gin.Default()
 
+	r.LoadHTMLGlob("pages/*")
+
 	r.GET("/", indexPageHandler)
-	r.GET("/post", postListPageHander)
+	r.GET("/post", postListPageHandler)
 	r.GET("/post/:id", postDetailPageHandler)
 	r.GET("/post/create", postCreatePageHandler)
 	r.POST("/post/create", postCreateHandler)
-	r.GET("/post/edit/:id", postUpdatePageHandler)
-	r.POST("/post/edit/:id", postUpdateHandler)
-	r.GET("/post/delete/:id", postDeleteHandler)
+	r.GET("/post/:id/edit", postUpdatePageHandler)
+	r.POST("/post/:id/edit", postUpdateHandler)
+	r.GET("/post/:id/delete", postDeleteHandler)
 
-	r.GET("/user/signup", signUpPageHandler)
-	r.POST("/user/signup", signUpHandler)
-	r.GET("/user/signin", signInPageHandler)
-	r.POST("/user/signin", signInHandler)
-	r.GET("/user/signout", signOutHandler)
+	r.GET("/user/signup", userSignUpPageHandler)
+	r.POST("/user/signup", userSignUpHandler)
+	r.GET("/user/signin", userSignInPageHandler)
+	r.POST("/user/signin", userSignInHandler)
+	r.GET("/user/signout", userSignOutHandler)
+
+	return r
+}
+
+func boardAPIServer() *gin.Engine {
+	r := gin.Default()
 
 	// api version
 	r.POST("/api/users/signup", signUpHandler)

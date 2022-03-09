@@ -1,6 +1,4 @@
-{{ template "base" }}
-
-{{ define "main" }}
+{{ template "header.html" . }}
 <div class="container">
   <br />
   <h1>
@@ -8,4 +6,4 @@
   </h1>
   <h2>{{.content}}</h2>
 </div>
-{{ end }}
+{{ template "footer.html" }}

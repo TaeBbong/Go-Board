@@ -1,6 +1,4 @@
-{{ template "base" }}
-
-{{ define "main" }}
+{{ template "header.html" .}}
 <div class="container">
   <section>
     <form class="form-horizontal" method="post" action="/post/create">
@@ -54,4 +52,4 @@
     </form>
   </section>
 </div>
-{{ end }}
+{{ template "footer.html" .}}
