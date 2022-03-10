@@ -53,31 +53,43 @@ func AuthRequired(c *gin.Context) {
 }
 
 func indexPageHandler(c *gin.Context) {
+	session := sessions.Default(c)
 	c.HTML(http.StatusOK, "index.html", gin.H{
-		"content": "This is IndexPage",
-		"isLogin": false,
+		"content":  "This is IndexPage",
+		"username": session.Get("username"),
+		"userID":   session.Get("userID"),
 	})
 }
 
 func postListPageHandler(c *gin.Context) {
+	session := sessions.Default(c)
 	var articles []Article
 	db.Find(&articles, &Article{})
 	c.HTML(http.StatusOK, "post_list.html", gin.H{
-		"posts": articles,
+		"posts":    articles,
+		"username": session.Get("username"),
+		"userID":   session.Get("userID"),
 	})
 }
 
 func postDetailPageHandler(c *gin.Context) {
+	session := sessions.Default(c)
 	var article Article
 	id := c.Param("id")
 	db.First(&article, id)
 	c.HTML(http.StatusOK, "post_detail.html", gin.H{
-		"post": article,
+		"post":     article,
+		"username": session.Get("username"),
+		"userID":   session.Get("userID"),
 	})
 }
 
 func postCreatePageHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "post_create.html", gin.H{})
+	session := sessions.Default(c)
+	c.HTML(http.StatusOK, "post_create.html", gin.H{
+		"username": session.Get("username"),
+		"userID":   session.Get("userID"),
+	})
 }
 
 func postUpdatePageHandler(c *gin.Context) {
@@ -91,7 +103,9 @@ func postUpdatePageHandler(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "post_edit.html", gin.H{
-		"post": article,
+		"post":     article,
+		"username": session.Get("username"),
+		"userID":   session.Get("userID"),
 	})
 }
 
