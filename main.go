@@ -220,7 +220,7 @@ func fileUploadHandler(c *gin.Context) {
 
 func init() {
 	tpl = template.Must(template.ParseGlob("pages/*.html"))
-	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Seoul"
+	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Seoul" // db setting
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("[-] DB Connection Failed...")
