@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 	"html/template"
 	"net/http"
+	"path/filepath"
 )
 
 var (
@@ -201,6 +202,21 @@ func userSignOutHandler(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/")
 }
 
+func filePageHandler(c *gin.Context) {
+	session := sessions.Default(c)
+	c.HTML(http.StatusOK, "file_home.html", gin.H{
+		"username": session.Get("username"),
+		"userID":   session.Get("userID"),
+	})
+}
+
+func fileUploadHandler(c *gin.Context) {
+	file, _ := c.FormFile("file")
+	fmt.Println(file.Filename)
+	c.SaveUploadedFile(file, filepath.Join("./upload", file.Filename))
+	c.Redirect(http.StatusFound, "/file")
+}
+
 func init() {
 	tpl = template.Must(template.ParseGlob("pages/*.html"))
 	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Seoul"
@@ -242,6 +258,8 @@ func boardServer() *gin.Engine {
 	r.POST("/user/signup", userSignUpHandler)
 	r.GET("/user/signin", userSignInPageHandler)
 	r.POST("/user/signin", userSignInHandler)
+	r.GET("/file", filePageHandler)
+	r.POST("/file", fileUploadHandler)
 
 	return r
 }
