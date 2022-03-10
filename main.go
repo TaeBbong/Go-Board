@@ -17,6 +17,7 @@ var (
 	db  *gorm.DB
 	err error
 	tpl *template.Template
+	fs  http.FileSystem = http.Dir("./upload")
 )
 
 type User struct {
@@ -238,6 +239,7 @@ func boardServer() *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
 
+	r.StaticFS("/upload", fs)
 	r.LoadHTMLGlob("pages/*")
 
 	private := r.Group("")
@@ -260,8 +262,6 @@ func boardServer() *gin.Engine {
 	r.POST("/user/signin", userSignInHandler)
 	r.GET("/file", filePageHandler)
 	r.POST("/file", fileUploadHandler)
-
-	r.GET("/upload")
 
 	return r
 }
