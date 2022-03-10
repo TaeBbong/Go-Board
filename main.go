@@ -141,6 +141,7 @@ func postDeleteHandler(c *gin.Context) {
 	session := sessions.Default(c)
 	if session.Get("userID") != article.UserID {
 		c.Redirect(http.StatusFound, "/")
+		return
 	}
 	db.Delete(&article)
 	c.Redirect(http.StatusFound, "/post")
