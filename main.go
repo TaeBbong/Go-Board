@@ -261,5 +261,7 @@ func boardServer() *gin.Engine {
 	r.GET("/file", filePageHandler)
 	r.POST("/file", fileUploadHandler)
 
+	r.GET("/upload")
+
 	return r
 }
