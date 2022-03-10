@@ -86,6 +86,9 @@ func postDetailPageHandler(c *gin.Context) {
 
 func postCreatePageHandler(c *gin.Context) {
 	session := sessions.Default(c)
+	if session.Get("userID") == nil {
+		c.Redirect(http.StatusFound, "/")
+	}
 	c.HTML(http.StatusOK, "post_create.html", gin.H{
 		"username": session.Get("username"),
 		"userID":   session.Get("userID"),
@@ -153,7 +156,7 @@ func userSignUpHandler(c *gin.Context) {
 	password := c.PostForm("password")
 	confirm := c.PostForm("confirm")
 
-	if db.First(&existUser, "username", username) == nil {
+	if db.First(&existUser, "username", username).Error != nil {
 		if password == confirm {
 			hash, _ := HashPassword(password)
 			db.Create(&User{Username: username, Password: hash})
